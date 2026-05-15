@@ -54,40 +54,33 @@ const handleRealtimeEvent = ({
   patchTransaction,
   setHasPendingUpdates,
 }: HandleRealtimeEventParams) => {
-  switch (event.type) {
-    case "transaction.updated": {
-      setHasPendingUpdates(true);
+  if (event.type === "transaction.updated") {
+    setHasPendingUpdates(true);
 
-      const realTimePatch = {
-        status: event.payload.status,
-        version: event.payload.version,
-        updatedAt: event.payload.updatedAt,
-      };
+    const realTimePatch = {
+      status: event.payload.status,
+      version: event.payload.version,
+      updatedAt: event.payload.updatedAt,
+    };
 
-      patchTransaction({
-        transactionId: event.payload.transactionId,
-        patch: realTimePatch,
-      });
+    patchTransaction({
+      transactionId: event.payload.transactionId,
+      patch: realTimePatch,
+    });
 
-      broadcastTransactionPatch({
-        transactionId: event.payload.transactionId,
-        patch: realTimePatch,
-      });
+    broadcastTransactionPatch({
+      transactionId: event.payload.transactionId,
+      patch: realTimePatch,
+    });
 
-      logOperation({
-        id: crypto.randomUUID(),
+    logOperation({
+      id: crypto.randomUUID(),
 
-        transactionId: event.payload.transactionId,
+      transactionId: event.payload.transactionId,
 
-        type: "realtime",
+      type: "realtime",
 
-        createdAt: new Date().toISOString(),
-      });
-
-      break;
-    }
-
-    default:
-      break;
+      createdAt: new Date().toISOString(),
+    });
   }
 };

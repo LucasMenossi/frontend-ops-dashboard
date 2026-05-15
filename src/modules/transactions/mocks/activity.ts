@@ -4,7 +4,7 @@ import { ActivityEvent } from "../../activity/types";
 
 export const activityEvents: ActivityEvent[] = Array.from(
   { length: 500 },
-  (_, index) => ({
+  () => ({
     id: faker.string.uuid(),
     type: faker.helpers.arrayElement([
       "transaction.updated",

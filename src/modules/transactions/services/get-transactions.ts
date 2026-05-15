@@ -1,4 +1,4 @@
-import { TransactionsQueryParams } from "../types/transactions";
+import { Transaction, TransactionsQueryParams } from "../types/transactions";
 
 interface GetTransactionsResponse<T> {
   data: T[];
@@ -11,7 +11,7 @@ interface GetTransactionsResponse<T> {
 export const getTransactions = async (
   params: TransactionsQueryParams,
   signal?: AbortSignal,
-): Promise<GetTransactionsResponse<any>> => {
+): Promise<GetTransactionsResponse<Transaction>> => {
   const searchParams = new URLSearchParams();
 
   searchParams.set("page", String(params.page));

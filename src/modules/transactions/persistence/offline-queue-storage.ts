@@ -2,7 +2,7 @@ import { QueuedMutation } from "../store/use-offline-mutation-queue";
 
 const STORAGE_KEY = "offline-transaction-queue";
 
-const isBrowser = typeof window !== "undefined";
+const isBrowser = globalThis.window !== undefined;
 
 export const saveOfflineQueue = (queue: QueuedMutation[]) => {
   if (!isBrowser) {

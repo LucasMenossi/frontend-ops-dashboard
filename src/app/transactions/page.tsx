@@ -8,23 +8,14 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-
-import { useVirtualizer } from "@tanstack/react-virtual";
-
 import { useQueryClient } from "@tanstack/react-query";
 
 import { ActivityFeed } from "@/modules/activity/components/activity-feed";
-
 import { NormalizedTransactionRow } from "@/modules/transactions/components/normalized-transaction-row";
-
 import { useBulkUpdateTransactions } from "@/modules/transactions/hooks/use-bulk-update-transactions";
-
 import { useTransactionRealtime } from "@/modules/transactions/hooks/use-transaction-realtime";
-
 import { useTransactions } from "@/modules/transactions/hooks/use-transactions";
-
 import { useTransactionsQueryState } from "@/modules/transactions/hooks/use-transactions-query-state";
-
 import { usePendingRealtimeUpdates } from "@/modules/transactions/store/use-pending-realtime-updates";
 
 import {
@@ -353,10 +344,7 @@ export default function TransactionsPage() {
         <SyncDiagnosticsPanel />
         <OperationLogPanel />
 
-        <div
-          ref={parentRef}
-          className="h-[600px] overflow-auto rounded-xl border"
-        >
+        <div ref={parentRef} className="h-150 overflow-auto rounded-xl border">
           <table className="w-full border-collapse">
             <thead className="sticky top-0 bg-zinc-100">
               {table.getHeaderGroups().map((headerGroup) => (

@@ -19,19 +19,12 @@ export const useCrossTabTransactions = () => {
     }
 
     const handleMessage = (event: MessageEvent<CrossTabEvent>) => {
-      switch (event.data.type) {
-        case "transaction.patched": {
-          patchTransaction({
-            transactionId: event.data.payload.transactionId,
+      if (event.data.type === "transaction.patched") {
+        patchTransaction({
+          transactionId: event.data.payload.transactionId,
 
-            patch: event.data.payload.patch,
-          });
-
-          break;
-        }
-
-        default:
-          break;
+          patch: event.data.payload.patch,
+        });
       }
     };
 

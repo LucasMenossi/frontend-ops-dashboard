@@ -13,7 +13,7 @@ export const ActivityFeed = () => {
   }, [data]);
 
   return (
-    <div className="flex h-[600px] w-[400px] flex-col border-l">
+    <div className="flex h-150 w-100 flex-col border-l">
       <div className="border-b p-4">
         <h2 className="font-semibold">Activity Feed</h2>
       </div>
