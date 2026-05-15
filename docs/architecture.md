@@ -1,16 +1,16 @@
 # Architecture
 
-This project models frontend synchronization as an operational system rather than a simple CRUD interface.
+This project models frontend synchronization as an operational system rather than a traditional CRUD interface.
 
 The architecture separates:
 
 - server synchronization
-- normalized client ownership
+- normalized entity ownership
 - synchronization metadata
-- projection derivation
-- rendering subscriptions
-- replay orchestration
+- offline replay behavior
 - reconciliation logic
+- rendering subscriptions
+- synchronization visibility
 
 ---
 
@@ -21,62 +21,75 @@ Server API
     ↓
 TanStack Query
     ↓
-Normalized Entity Store (Zustand)
+Normalized Zustand Store
     ↓
-Projection Selectors
+Synchronization Metadata
     ↓
-Granular Row Subscriptions
+Granular Entity Subscriptions
     ↓
 Operational Dashboard UI
 ```
 
-## Flow Explanation
+---
 
-### TanStack Query
+# Architectural Responsibilities
+
+## TanStack Query
 
 TanStack Query owns:
 
 - remote fetching
-- cache invalidation
 - background synchronization
+- cache invalidation
 - async request lifecycle
 
 It does not directly own operational rendering state.
 
 ---
 
-### Normalized Entity Store
+## Zustand Entity Store
 
-The Zustand entity store owns:
+The Zustand store owns:
 
 - normalized transaction entities
 - synchronization metadata
 - optimistic state
-- replay ownership
-- deterministic reconciliation
+- replay coordination
+- reconciliation ownership
 
-This separation enables granular subscriptions and predictable synchronization behavior.
-
----
-
-### Projection Selectors
-
-Projection selectors derive render-oriented views from normalized entities.
-
-Examples:
-
-- filtered transaction views
-- activity timelines
-- optimistic state indicators
-- synchronization diagnostics
-
-This keeps rendering concerns separate from entity ownership.
+This separation enables predictable synchronization behavior and granular rendering updates.
 
 ---
 
-### Granular Row Subscriptions
+## Synchronization Metadata
 
-Rows subscribe directly to transaction IDs instead of entire collections.
+Synchronization state is intentionally separated from domain state.
+
+Each entity tracks synchronization data independently:
+
+```txt
+syncState
+isDirty
+pendingMutationId
+lastMutationId
+optimisticVersion
+replayedAt
+replaySourceTabId
+lastSyncedAt
+```
+
+This improves:
+
+- reconciliation clarity
+- replay visibility
+- synchronization debugging
+- optimistic state tracking
+
+---
+
+## Granular Row Subscriptions
+
+Rows subscribe directly to transaction entities instead of entire collections.
 
 Result:
 
@@ -85,7 +98,12 @@ Single-row updates
 without full-table rerenders
 ```
 
-This improves rendering precision during optimistic updates and replay transitions.
+This improves rendering isolation during:
+
+- optimistic transitions
+- replay execution
+- synchronization updates
+- realtime mutations
 
 ---
 
@@ -100,7 +118,7 @@ Metadata Transition
       ↓
 Broadcast Synchronization
       ↓
-Offline Queue (if offline)
+Offline Queue
       ↓
 Replay Execution
       ↓
@@ -115,27 +133,27 @@ Final Synced State
 
 # Synchronization Stages
 
-## Optimistic Patch
+## Optimistic Updates
 
-Mutations apply immediately to the UI before server confirmation.
+Mutations apply immediately before server confirmation.
 
 Entities receive synchronization metadata updates including:
 
 - optimistic versions
-- pending mutation IDs
+- pending mutations
 - dirty state markers
 
 ---
 
 ## Broadcast Synchronization
 
-Tabs communicate through the BroadcastChannel API to coordinate synchronization ownership.
+Tabs communicate through the BroadcastChannel API to coordinate synchronization behavior.
 
 This prevents duplicated replay execution across tabs.
 
 ---
 
-## Offline Queue
+## Offline Replay
 
 Offline mutations are persisted locally and replayed once connectivity returns.
 
@@ -143,8 +161,8 @@ The replay system tracks:
 
 - replay ownership
 - replay source tab
-- mutation lineage
 - replay timestamps
+- mutation lineage
 
 ---
 
@@ -161,6 +179,32 @@ Synchronization metadata remains intentionally separated from domain state.
 
 ---
 
+# Domain Structure
+
+```txt
+modules/
+  activity/
+  transactions/
+```
+
+Each module owns its own:
+
+- hooks
+- services
+- synchronization logic
+- rendering logic
+- domain state
+- utilities
+
+This structure prioritizes:
+
+- domain isolation
+- ownership clarity
+- scalability
+- maintainability
+
+---
+
 # Architectural Goals
 
 This project prioritizes:
@@ -168,6 +212,6 @@ This project prioritizes:
 - deterministic synchronization
 - rendering isolation
 - operational visibility
-- frontend systems architecture
 - predictable reconciliation
-- domain-oriented ownership
+- modular frontend ownership
+- synchronization traceability
