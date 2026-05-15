@@ -56,18 +56,13 @@ export const useIndexedTransactions = ({
     });
 
     const sorted = sortTransactions(filtered, queryParams);
-
     const start = (queryParams.page - 1) * queryParams.pageSize;
-
     const end = start + queryParams.pageSize;
-
     const paginated = sorted.slice(start, end);
 
     return {
       transactionIds: paginated.map((transaction) => transaction.id),
-
       total: filtered.length,
-
       totalPages: Math.ceil(filtered.length / queryParams.pageSize),
     };
   }, [entities, statusIndexes, queryParams]);

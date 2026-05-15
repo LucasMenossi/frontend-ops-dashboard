@@ -7,11 +7,8 @@ export const useSyncDiagnostics = () => {
 
   return useMemo(() => {
     let optimisticCount = 0;
-
     let replayingCount = 0;
-
     let conflictedCount = 0;
-
     let dirtyCount = 0;
 
     metadata.forEach((entityMetadata) => {
@@ -39,11 +36,8 @@ export const useSyncDiagnostics = () => {
 
     return {
       optimisticCount,
-
       replayingCount,
-
       conflictedCount,
-
       dirtyCount,
     };
   }, [metadata]);

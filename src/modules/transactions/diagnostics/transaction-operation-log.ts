@@ -1,12 +1,8 @@
 type OperationLog = {
   id: string;
-
   uiId: string;
-
   transactionId: string;
-
   type: "optimistic" | "replay" | "realtime" | "rollback";
-
   createdAt: string;
 };
 
@@ -17,7 +13,6 @@ const operations: OperationLog[] = [];
 export const logOperation = (operation: Omit<OperationLog, "uiId">) => {
   operations.unshift({
     ...operation,
-
     uiId: crypto.randomUUID(),
   });
 

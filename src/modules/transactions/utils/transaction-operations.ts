@@ -5,8 +5,6 @@ export const createOptimisticTransactionPatch = (
   status: Transaction["status"],
 ): Partial<Transaction> => ({
   status,
-
   version: current.version + 1,
-
   updatedAt: new Date().toISOString(),
 });

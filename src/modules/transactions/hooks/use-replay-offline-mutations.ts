@@ -80,15 +80,12 @@ export const useReplayOfflineMutations = () => {
           try {
             await updateTransactionStatus({
               transactionId: mutation.transactionId,
-
               status: mutation.status,
             });
 
             setTransactionMetadata(mutation.transactionId, {
               ...createSyncedMetadata(mutation.id),
-
               replayedAt: new Date().toISOString(),
-
               replaySourceTabId: RUNTIME_TAB_ID,
             });
 
@@ -96,11 +93,8 @@ export const useReplayOfflineMutations = () => {
 
             logOperation({
               id: mutation.id,
-
               transactionId: mutation.transactionId,
-
               type: "replay",
-
               createdAt: new Date().toISOString(),
             });
           } catch {
@@ -113,11 +107,8 @@ export const useReplayOfflineMutations = () => {
 
             logOperation({
               id: mutation.id,
-
               transactionId: mutation.transactionId,
-
               type: "rollback",
-
               createdAt: new Date().toISOString(),
             });
           }

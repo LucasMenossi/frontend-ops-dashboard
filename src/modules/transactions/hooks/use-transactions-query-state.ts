@@ -16,11 +16,8 @@ import {
 } from "../types/transactions";
 
 const DEFAULT_PAGE = 1;
-
 const DEFAULT_PAGE_SIZE = 20;
-
 const DEFAULT_SORT_KEY = "createdAt";
-
 const DEFAULT_DIRECTION: SortDirection = "desc";
 
 export const useTransactionsQueryState = () => {
@@ -81,9 +78,7 @@ export const useTransactionsQueryState = () => {
       nextDirection: SortDirection,
     ) => {
       setPage(DEFAULT_PAGE);
-
       setSortKey(nextSortKey);
-
       setDirection(nextDirection);
     },
     [setSortKey, setDirection, setPage],
@@ -102,15 +97,10 @@ export const useTransactionsQueryState = () => {
 
   const resetFilters = useCallback(() => {
     setPage(DEFAULT_PAGE);
-
     setSearch(null);
-
     setStatus(null);
-
     setSortKey(DEFAULT_SORT_KEY);
-
     setDirection(DEFAULT_DIRECTION);
-
     setSearchInput("");
   }, [setPage, setSearch, setStatus, setSortKey, setDirection]);
 

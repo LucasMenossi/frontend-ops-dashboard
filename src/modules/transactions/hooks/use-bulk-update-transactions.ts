@@ -60,26 +60,22 @@ export const useBulkUpdateTransactions = () => {
 
         patchTransaction({
           transactionId,
-
           patch: optimisticPatch,
         });
 
         setTransactionMetadata(
           transactionId,
-
           createOptimisticMetadata(crypto.randomUUID(), current.version + 1),
         );
 
         broadcastTransactionPatch({
           transactionId,
-
           patch: optimisticPatch,
         });
       });
 
       return {
         previous,
-
         processedIds,
       };
     },

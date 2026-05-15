@@ -3,15 +3,10 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { faker } from "@faker-js/faker";
 
 import { updateTransactionStatus } from "../services/update-transaction-status";
-
 import { useNetworkStatus } from "./use-network-status";
-
 import { useOfflineMutationQueue } from "../store/use-offline-mutation-queue";
-
 import { useTransactionEntityStore } from "../store/use-transaction-entity-store";
-
 import { broadcastTransactionPatch } from "../sync/broadcast/broadcast-transaction-patch";
-
 import { Transaction, TransactionStatus } from "../types/transactions";
 import {
   createConflictMetadata,
@@ -23,13 +18,11 @@ import { logOperation } from "../diagnostics/transaction-operation-log";
 
 interface UpdateTransactionStatusVariables {
   transactionId: string;
-
   status: TransactionStatus;
 }
 
 interface UpdateTransactionStatusContext {
   previous: Transaction | null;
-
   mutationId: string | null;
 }
 
@@ -39,7 +32,6 @@ interface OfflineMutationResult {
 
 interface OnlineMutationResult {
   transactionId: string;
-
   status: TransactionStatus;
 }
 
@@ -79,7 +71,6 @@ export const useUpdateTransactionStatus = () => {
 
       return updateTransactionStatus({
         transactionId: variables.transactionId,
-
         status: variables.status,
       });
     },
@@ -94,7 +85,6 @@ export const useUpdateTransactionStatus = () => {
       if (!current) {
         return {
           previous: null,
-
           mutationId: null,
         };
       }
@@ -104,13 +94,9 @@ export const useUpdateTransactionStatus = () => {
       if (!isOnline) {
         enqueue({
           id: mutationId,
-
           transactionId: variables.transactionId,
-
           status: variables.status,
-
           createdAt: new Date().toISOString(),
-
           state: "pending",
         });
       }
@@ -122,7 +108,6 @@ export const useUpdateTransactionStatus = () => {
 
       patchTransaction({
         transactionId: variables.transactionId,
-
         patch: optimisticPatch,
       });
 
@@ -133,23 +118,18 @@ export const useUpdateTransactionStatus = () => {
 
       broadcastTransactionPatch({
         transactionId: variables.transactionId,
-
         patch: optimisticPatch,
       });
 
       logOperation({
         id: mutationId,
-
         transactionId: variables.transactionId,
-
         type: "optimistic",
-
         createdAt: new Date().toISOString(),
       });
 
       return {
         previous: current,
-
         mutationId,
       };
     },
@@ -161,7 +141,6 @@ export const useUpdateTransactionStatus = () => {
 
       patchTransaction({
         transactionId: variables.transactionId,
-
         patch: context.previous,
       });
 
@@ -169,17 +148,13 @@ export const useUpdateTransactionStatus = () => {
 
       broadcastTransactionPatch({
         transactionId: variables.transactionId,
-
         patch: context.previous,
       });
 
       logOperation({
         id: context?.mutationId ?? crypto.randomUUID(),
-
         transactionId: variables.transactionId,
-
         type: "rollback",
-
         createdAt: new Date().toISOString(),
       });
     },

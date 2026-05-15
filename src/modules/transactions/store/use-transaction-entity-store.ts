@@ -1,11 +1,8 @@
 import { create } from "zustand";
 
 import { Transaction, TransactionStatus } from "../types/transactions";
-
 import { reconcileTransaction } from "../reconciliation/reconcile-transaction";
-
 import { reconcileTransactionPatch } from "../reconciliation/reconcile-transaction-patch";
-
 import { TransactionEntityMetadata } from "../types/entity-metadata";
 
 interface TransactionIndexes {
@@ -14,7 +11,6 @@ interface TransactionIndexes {
 
 interface PatchTransactionParams {
   transactionId: string;
-
   patch: Partial<Transaction>;
 }
 
@@ -22,22 +18,15 @@ type TransactionMetadataMap = Map<string, TransactionEntityMetadata>;
 
 interface TransactionEntityStore {
   entities: Map<string, Transaction>;
-
   indexes: TransactionIndexes;
-
   metadata: TransactionMetadataMap;
-
   upsertTransactions: (transactions: Transaction[]) => void;
-
   patchTransaction: (params: PatchTransactionParams) => void;
-
   removeTransaction: (transactionId: string) => void;
-
   setTransactionMetadata: (
     transactionId: string,
     metadata: Partial<TransactionEntityMetadata>,
   ) => void;
-
   clearTransactionMetadata: (transactionId: string) => void;
 }
 
@@ -66,20 +55,49 @@ const cloneIndexes = (indexes: TransactionIndexes): TransactionIndexes => {
 const createDefaultMetadata = (): TransactionEntityMetadata => {
   return {
     isDirty: false,
-
     syncState: "synced",
-
     pendingMutationId: null,
-
     lastMutationId: null,
-
     optimisticVersion: null,
-
     replayedAt: null,
-
     replaySourceTabId: null,
-
     lastSyncedAt: null,
+  };
+};
+
+const resolveOptimisticMetadata = (
+  existingMetadata: TransactionEntityMetadata | undefined,
+  shouldFinalizeOptimistic: boolean,
+) => {
+  if (shouldFinalizeOptimistic) {
+    return {
+      syncState: "synced" as const,
+      isDirty: false,
+      optimisticVersion: null,
+      pendingMutationId: null,
+    };
+  }
+
+  return {
+    syncState: existingMetadata?.syncState ?? "synced",
+    isDirty: existingMetadata?.isDirty ?? false,
+    optimisticVersion: existingMetadata?.optimisticVersion ?? null,
+    pendingMutationId: existingMetadata?.pendingMutationId ?? null,
+  };
+};
+
+const reconcileTransactionMetadata = ({
+  existingMetadata,
+  shouldFinalizeOptimistic,
+}: {
+  existingMetadata: TransactionEntityMetadata | undefined;
+  shouldFinalizeOptimistic: boolean;
+}): TransactionEntityMetadata => {
+  return {
+    ...createDefaultMetadata(),
+    ...existingMetadata,
+    ...resolveOptimisticMetadata(existingMetadata, shouldFinalizeOptimistic),
+    lastSyncedAt: new Date().toISOString(),
   };
 };
 
@@ -96,14 +114,11 @@ export const useTransactionEntityStore = create<TransactionEntityStore>(
     upsertTransactions: (transactions) => {
       set((state) => {
         const nextEntities = new Map(state.entities);
-
         const nextIndexes = cloneIndexes(state.indexes);
-
         const nextMetadata = new Map(state.metadata);
 
         transactions.forEach((transaction) => {
           const current = nextEntities.get(transaction.id);
-
           const metadata = state.metadata.get(transaction.id);
 
           const reconciliation = reconcileTransaction({
@@ -124,36 +139,18 @@ export const useTransactionEntityStore = create<TransactionEntityStore>(
 
           const existingMetadata = nextMetadata.get(transaction.id);
 
-          nextMetadata.set(transaction.id, {
-            ...createDefaultMetadata(),
-
-            ...existingMetadata,
-
-            syncState: reconciliation.shouldFinalizeOptimistic
-              ? "synced"
-              : (existingMetadata?.syncState ?? "synced"),
-
-            isDirty: reconciliation.shouldFinalizeOptimistic
-              ? false
-              : (existingMetadata?.isDirty ?? false),
-
-            optimisticVersion: reconciliation.shouldFinalizeOptimistic
-              ? null
-              : (existingMetadata?.optimisticVersion ?? null),
-
-            pendingMutationId: reconciliation.shouldFinalizeOptimistic
-              ? null
-              : (existingMetadata?.pendingMutationId ?? null),
-
-            lastSyncedAt: new Date().toISOString(),
-          });
+          nextMetadata.set(
+            transaction.id,
+            reconcileTransactionMetadata({
+              existingMetadata,
+              shouldFinalizeOptimistic: reconciliation.shouldFinalizeOptimistic,
+            }),
+          );
         });
 
         return {
           entities: nextEntities,
-
           indexes: nextIndexes,
-
           metadata: nextMetadata,
         };
       });
@@ -200,7 +197,6 @@ export const useTransactionEntityStore = create<TransactionEntityStore>(
 
         nextMetadata.set(transactionId, {
           ...current,
-
           ...metadata,
         });
 
@@ -225,11 +221,8 @@ export const useTransactionEntityStore = create<TransactionEntityStore>(
     removeTransaction: (transactionId) => {
       set((state) => {
         const nextEntities = new Map(state.entities);
-
         const nextIndexes = cloneIndexes(state.indexes);
-
         const nextMetadata = new Map(state.metadata);
-
         const existing = nextEntities.get(transactionId);
 
         if (existing) {
@@ -242,9 +235,7 @@ export const useTransactionEntityStore = create<TransactionEntityStore>(
 
         return {
           entities: nextEntities,
-
           indexes: nextIndexes,
-
           metadata: nextMetadata,
         };
       });

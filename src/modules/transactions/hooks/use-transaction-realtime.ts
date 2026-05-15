@@ -26,9 +26,7 @@ export const useTransactionRealtime = () => {
     const unsubscribe = subscribeToTransactionEvents((event) => {
       handleRealtimeEvent({
         event,
-
         patchTransaction,
-
         setHasPendingUpdates,
       });
     });
@@ -42,7 +40,6 @@ interface HandleRealtimeEventParams {
 
   patchTransaction: (params: {
     transactionId: string;
-
     patch: Partial<Transaction>;
   }) => void;
 
@@ -75,11 +72,8 @@ const handleRealtimeEvent = ({
 
     logOperation({
       id: crypto.randomUUID(),
-
       transactionId: event.payload.transactionId,
-
       type: "realtime",
-
       createdAt: new Date().toISOString(),
     });
   }

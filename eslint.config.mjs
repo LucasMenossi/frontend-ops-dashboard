@@ -8,18 +8,22 @@ const eslintConfig = defineConfig([
 
   {
     rules: {
-      "no-multiple-empty-lines": [
-        "error",
-        {
-          max: 1,
-          maxBOF: 0,
-          maxEOF: 0,
-        },
-      ],
+      complexity: ["warn", 10],
+
+      "max-depth": ["warn", 4],
+
+      "max-nested-callbacks": ["warn", 3],
+
+      "no-nested-ternary": "warn",
     },
   },
 
-  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts"]),
+  globalIgnores([
+    ".next/**",
+    "out/**",
+    "build/**",
+    "next-env.d.ts",
+  ]),
 ]);
 
 export default eslintConfig;

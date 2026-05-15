@@ -18,13 +18,7 @@ interface BadgeProps {
 const Badge = ({ label }: BadgeProps) => {
   return (
     <span
-      className="
-        rounded-full
-        bg-yellow-100
-        px-2
-        py-1
-        text-xs
-        text-yellow-700
+      className=" rounded-full  bg-yellow-100 px-2 py-1 text-xs  text-yellow-700
       "
     >
       {label}
@@ -32,83 +26,97 @@ const Badge = ({ label }: BadgeProps) => {
   );
 };
 
-export const NormalizedTransactionRow = memo(
-  ({ transactionId }: NormalizedTransactionRowProps) => {
-    const transaction = useTransactionEntity(transactionId);
+const syncStateLabels = {
+  optimistic: "Syncing",
+  replaying: "Replay",
+  conflicted: "Conflict",
+} as const;
 
-    const metadata = useTransactionMetadata(transactionId);
+interface SyncBadgeProps {
+  syncState?: string;
+}
 
-    const isSelected = useRowSelection((state) =>
-      state.selectedRows.has(transactionId),
-    );
+const getNextStatus = (status: string) => {
+  return status === "completed" ? "pending" : "completed";
+};
 
-    const toggleRow = useRowSelection((state) => state.toggleRow);
+const SyncBadge = ({ syncState }: SyncBadgeProps) => {
+  if (!syncState || !(syncState in syncStateLabels)) {
+    return null;
+  }
 
-    const updateTransactionMutation = useUpdateTransactionStatus();
+  return (
+    <Badge label={syncStateLabels[syncState as keyof typeof syncStateLabels]} />
+  );
+};
 
-    if (!transaction) {
-      return null;
-    }
+const NormalizedTransactionRowComponent = ({
+  transactionId,
+}: NormalizedTransactionRowProps) => {
+  const transaction = useTransactionEntity(transactionId);
 
-    return (
-      <tr className="border-b">
-        <td className="p-4">
-          <input
-            checked={isSelected}
-            onChange={() => toggleRow(transactionId)}
-          />
-        </td>
+  const metadata = useTransactionMetadata(transactionId);
 
-        <td className="p-4 text-sm">{transaction.customerName}</td>
+  const isSelected = useRowSelection((state) =>
+    state.selectedRows.has(transactionId),
+  );
 
-        <td className="p-4 text-sm">{transaction.email}</td>
+  const toggleRow = useRowSelection((state) => state.toggleRow);
 
-        <td className="p-4 text-sm">${transaction.amount}</td>
+  const updateTransactionMutation = useUpdateTransactionStatus();
 
-        <td className="p-4 text-sm">
-          <div className="flex items-center gap-2">
-            <span>{transaction.status}</span>
+  if (!transaction) {
+    return null;
+  }
 
-            {metadata?.syncState === "optimistic" && <Badge label="Syncing" />}
+  const isUpdating =
+    updateTransactionMutation.isPending &&
+    updateTransactionMutation.variables?.transactionId === transactionId;
 
-            {metadata?.syncState === "replaying" && <Badge label="Replay" />}
+  const handleUpdateStatus = () => {
+    updateTransactionMutation.mutate({
+      transactionId,
+      status: getNextStatus(transaction.status),
+    });
+  };
 
-            {metadata?.syncState === "conflicted" && <Badge label="Conflict" />}
-          </div>
-        </td>
+  return (
+    <tr className="border-b">
+      <td className="p-4">
+        <input checked={isSelected} onChange={() => toggleRow(transactionId)} />
+      </td>
 
-        <td className="p-4 text-sm">
-          {new Date(transaction.createdAt).toLocaleDateString()}
-        </td>
+      <td className="p-4 text-sm">{transaction.customerName}</td>
 
-        <td className="p-4">
-          <button
-            onClick={() => {
-              const nextStatus =
-                transaction.status === "completed" ? "pending" : "completed";
+      <td className="p-4 text-sm">{transaction.email}</td>
 
-              updateTransactionMutation.mutate({
-                transactionId,
+      <td className="p-4 text-sm">${transaction.amount}</td>
 
-                status: nextStatus,
-              });
-            }}
-            disabled={
-              updateTransactionMutation.isPending &&
-              updateTransactionMutation.variables?.transactionId ===
-                transactionId
-            }
-            className=" rounded border px-3 py-1 text-xs disabled:opacity-50"
-          >
-            {updateTransactionMutation.isPending &&
-            updateTransactionMutation.variables?.transactionId === transactionId
-              ? "Updating..."
-              : "Update"}
-          </button>
-        </td>
-      </tr>
-    );
-  },
-);
+      <td className="p-4 text-sm">
+        <div className="flex items-center gap-2">
+          <span>{transaction.status}</span>
+
+          <SyncBadge syncState={metadata?.syncState} />
+        </div>
+      </td>
+
+      <td className="p-4 text-sm">
+        {new Date(transaction.createdAt).toLocaleDateString()}
+      </td>
+
+      <td className="p-4">
+        <button
+          onClick={handleUpdateStatus}
+          disabled={isUpdating}
+          className="rounded border px-3 py-1 text-xs disabled:opacity-50"
+        >
+          {isUpdating ? "Updating..." : "Update"}
+        </button>
+      </td>
+    </tr>
+  );
+};
+
+export const NormalizedTransactionRow = memo(NormalizedTransactionRowComponent);
 
 NormalizedTransactionRow.displayName = "NormalizedTransactionRow";

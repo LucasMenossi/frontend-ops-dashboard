@@ -12,9 +12,7 @@ export interface Transaction {
   amount: number;
   currency: string;
   status: TransactionStatus;
-
   version: number;
-
   createdAt: string;
   updatedAt: string;
 }

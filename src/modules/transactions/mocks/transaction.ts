@@ -45,22 +45,14 @@ const generateCurrency = () => {
 
 export const transactions: Transaction[] = Array.from({ length: 500 }, () => ({
   id: faker.string.uuid(),
-
   customerName: faker.person.fullName(),
-
   email: faker.internet.email(),
-
   amount: generateAmount(),
-
   currency: generateCurrency(),
-
   status: generateTransactionStatus(),
-
   version: 1,
-
   createdAt: faker.date
     .between({ from: "2025-01-01", to: new Date() })
     .toISOString(),
-
   updatedAt: faker.date.recent().toISOString(),
 }));

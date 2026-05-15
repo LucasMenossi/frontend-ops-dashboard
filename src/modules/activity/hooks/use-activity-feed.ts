@@ -12,11 +12,8 @@ export const useActivityFeed = () => {
     string | undefined
   >({
     queryKey: ["activity-feed"],
-
     queryFn: ({ pageParam }) => getActivityFeed(pageParam),
-
     initialPageParam: undefined,
-
     getNextPageParam: (lastPage) => lastPage.nextCursor,
   });
 };
