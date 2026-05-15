@@ -15,10 +15,6 @@ export const reconcileTransactionPatch = ({
     ...patch,
   };
 
-  /*
-   * PREVENT STALE PATCHES
-   */
-
   if (patch.version !== undefined && patch.version < current.version) {
     return current;
   }

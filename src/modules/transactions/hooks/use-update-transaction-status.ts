@@ -71,19 +71,11 @@ export const useUpdateTransactionStatus = () => {
     UpdateTransactionStatusContext
   >({
     mutationFn: async (variables): Promise<UpdateTransactionStatusResult> => {
-      /*
-       * OFFLINE MUTATION
-       */
-
       if (!isOnline) {
         return {
           offline: true,
         };
       }
-
-      /*
-       * ONLINE MUTATION
-       */
 
       return updateTransactionStatus({
         transactionId: variables.transactionId,
@@ -99,10 +91,6 @@ export const useUpdateTransactionStatus = () => {
 
       const current = entities.get(variables.transactionId);
 
-      /*
-       * ENTITY NOT FOUND
-       */
-
       if (!current) {
         return {
           previous: null,
@@ -111,15 +99,7 @@ export const useUpdateTransactionStatus = () => {
         };
       }
 
-      /*
-       * MUTATION LINEAGE
-       */
-
       const mutationId = faker.string.uuid();
-
-      /*
-       * OFFLINE QUEUE
-       */
 
       if (!isOnline) {
         enqueue({
@@ -135,18 +115,10 @@ export const useUpdateTransactionStatus = () => {
         });
       }
 
-      /*
-       * OPTIMISTIC PATCH
-       */
-
       const optimisticPatch = createOptimisticTransactionPatch(
         current,
         variables.status,
       );
-
-      /*
-       * LOCAL PATCH
-       */
 
       patchTransaction({
         transactionId: variables.transactionId,
@@ -154,18 +126,10 @@ export const useUpdateTransactionStatus = () => {
         patch: optimisticPatch,
       });
 
-      /*
-       * METADATA
-       */
-
       setTransactionMetadata(
         variables.transactionId,
         createOptimisticMetadata(mutationId, current.version + 1),
       );
-
-      /*
-       * CROSS TAB PATCH
-       */
 
       broadcastTransactionPatch({
         transactionId: variables.transactionId,
@@ -195,25 +159,13 @@ export const useUpdateTransactionStatus = () => {
         return;
       }
 
-      /*
-       * ROLLBACK
-       */
-
       patchTransaction({
         transactionId: variables.transactionId,
 
         patch: context.previous,
       });
 
-      /*
-       * CONFLICT METADATA
-       */
-
       setTransactionMetadata(variables.transactionId, createConflictMetadata());
-
-      /*
-       * CROSS TAB ROLLBACK
-       */
 
       broadcastTransactionPatch({
         transactionId: variables.transactionId,
@@ -233,10 +185,6 @@ export const useUpdateTransactionStatus = () => {
     },
 
     onSuccess: (_result, variables, context) => {
-      /*
-       * FINALIZE SYNC
-       */
-
       setTransactionMetadata(
         variables.transactionId,
         createSyncedMetadata(context?.mutationId),

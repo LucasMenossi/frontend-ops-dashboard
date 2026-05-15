@@ -13,10 +13,6 @@ export interface Transaction {
   currency: string;
   status: TransactionStatus;
 
-  /*
-   * VERSIONED RECONCILIATION
-   */
-
   version: number;
 
   createdAt: string;

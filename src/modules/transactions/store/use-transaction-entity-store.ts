@@ -114,29 +114,13 @@ export const useTransactionEntityStore = create<TransactionEntityStore>(
 
           const reconciled = reconciliation.transaction;
 
-          /*
-           * INDEX CLEANUP
-           */
-
           if (current) {
             nextIndexes.byStatus.get(current.status)?.delete(transaction.id);
           }
 
-          /*
-           * ENTITY UPDATE
-           */
-
           nextEntities.set(transaction.id, reconciled);
 
-          /*
-           * INDEX UPDATE
-           */
-
           nextIndexes.byStatus.get(reconciled.status)?.add(transaction.id);
-
-          /*
-           * METADATA UPDATE
-           */
 
           const existingMetadata = nextMetadata.get(transaction.id);
 
@@ -144,10 +128,6 @@ export const useTransactionEntityStore = create<TransactionEntityStore>(
             ...createDefaultMetadata(),
 
             ...existingMetadata,
-
-            /*
-             * SERVER FINALIZED
-             */
 
             syncState: reconciliation.shouldFinalizeOptimistic
               ? "synced"
@@ -252,23 +232,11 @@ export const useTransactionEntityStore = create<TransactionEntityStore>(
 
         const existing = nextEntities.get(transactionId);
 
-        /*
-         * INDEX CLEANUP
-         */
-
         if (existing) {
           nextIndexes.byStatus.get(existing.status)?.delete(transactionId);
         }
 
-        /*
-         * ENTITY CLEANUP
-         */
-
         nextEntities.delete(transactionId);
-
-        /*
-         * METADATA CLEANUP
-         */
 
         nextMetadata.delete(transactionId);
 
