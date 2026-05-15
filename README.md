@@ -1,16 +1,31 @@
 # Frontend Operations Dashboard
 
-A frontend-focused operational dashboard built to simulate realistic distributed frontend engineering problems:
+A frontend systems engineering project focused on **distributed state synchronization**, **optimistic workflows**, and **operational frontend architecture**.
 
-- optimistic updates
-- offline replay systems
-- reconciliation flows
-- multi-tab synchronization
+Unlike traditional dashboard projects centered around CRUD interfaces, this project explores the kinds of frontend infrastructure problems commonly found in large-scale production systems:
+
+- optimistic mutations
+- offline replay orchestration
+- reconciliation correctness
+- multi-tab coordination
+- granular rendering isolation
 - normalized entity ownership
-- granular rendering subscriptions
-- metadata-aware synchronization
+- metadata-driven synchronization
 
-The goal of this project is not CRUD complexity — it is frontend systems engineering.
+The primary goal is to simulate realistic frontend operational complexity — not UI complexity.
+
+---
+
+# Preview
+
+```txt
+Optimistic Updates
+Offline Replay
+Multi-Tab Sync
+Reconciliation Engine
+Granular Rendering
+Metadata-Aware State
+```
 
 ---
 
@@ -27,38 +42,39 @@ The goal of this project is not CRUD complexity — it is frontend systems engin
 
 ---
 
-# Project Goals
+# Core Concepts
 
-This project was designed to explore:
+This project explores frontend patterns often required in operational and real-time systems:
 
-- distributed frontend state reasoning
-- optimistic reconciliation
+- distributed frontend state management
+- optimistic synchronization flows
 - replay orchestration
+- reconciliation strategies
+- async consistency handling
+- entity normalization
+- granular subscription rendering
+- multi-tab synchronization
 - synchronization metadata ownership
-- rendering precision
-- multi-tab coordination
-- operational dashboard patterns
-- realistic async frontend behavior
 
 ---
 
-# Architecture Overview
+# Architecture
 
 ```txt
-TanStack Query
-        ↓
-Normalized Zustand Entity Store
-        ↓
+Server State (TanStack Query)
+              ↓
+Normalized Entity Store (Zustand)
+              ↓
 Projection Selectors
-        ↓
+              ↓
 Granular Row Subscriptions
-        ↓
+              ↓
 Operational Dashboard UI
 ```
 
 ---
 
-# Synchronization Flow
+# Synchronization Lifecycle
 
 ```txt
 User Mutation
@@ -71,7 +87,7 @@ Broadcast Synchronization
       ↓
 Offline Queue (if offline)
       ↓
-Replay
+Replay Execution
       ↓
 Reconciliation
       ↓
@@ -82,54 +98,61 @@ Final Synced State
 
 # Key Features
 
-## Normalized Entity Architecture
+## Normalized Entity Store
 
-Transactions are stored in a normalized entity store instead of nested component state.
+Transactions are stored in a normalized entity architecture instead of deeply nested component state.
 
-Benefits:
+### Benefits
 
 - granular subscriptions
-- predictable ownership
-- rendering precision
+- predictable ownership boundaries
 - easier reconciliation
+- rendering isolation
+- deterministic entity updates
 
 ---
 
 ## Optimistic Updates
 
-Transaction updates apply immediately in the UI before the server resolves.
+Mutations are applied immediately to the UI before server confirmation.
 
-The system tracks:
+The synchronization layer tracks:
 
-- optimistic state
-- mutation lineage
-- synchronization metadata
+- optimistic versions
+- pending mutations
 - replay provenance
+- synchronization metadata
+- mutation lineage
+
+This enables deterministic reconciliation after replay or server resolution.
 
 ---
 
 ## Offline Replay Queue
 
-Mutations performed while offline are persisted locally and replayed when connectivity returns.
+Mutations executed while offline are persisted locally and replayed automatically when connectivity is restored.
 
-Features:
+### Features
 
-- persistent queue
-- replay leadership
-- replay metadata
+- persistent mutation queue
+- replay orchestration
+- replay leadership coordination
 - conflict-safe synchronization
+- deterministic replay ordering
 
 ---
 
 ## Multi-Tab Synchronization
 
-Tabs coordinate through BroadcastChannel to avoid duplicated replay execution.
+Tabs communicate using the BroadcastChannel API to coordinate synchronization behavior.
 
-Features:
+### Features
 
-- synchronization broadcasts
+- cross-tab entity synchronization
 - replay leadership election
-- cross-tab entity updates
+- mutation broadcasts
+- synchronization visibility
+- duplicate replay prevention
 
 ---
 
@@ -137,7 +160,7 @@ Features:
 
 Synchronization metadata is intentionally separated from domain state.
 
-Each entity tracks:
+Each entity tracks operational synchronization data independently:
 
 ```txt
 syncState
@@ -150,56 +173,68 @@ replaySourceTabId
 lastSyncedAt
 ```
 
+This separation simplifies reconciliation logic and improves synchronization traceability.
+
 ---
 
-## Rendering Optimization
+## Granular Rendering Optimization
 
-Rows subscribe directly to transaction IDs instead of entire collections.
+Instead of subscribing components to entire collections, rows subscribe directly to individual transaction entities.
 
-Result:
+### Result
 
 ```txt
-single-row updates
-without full table rerenders
+Single-row updates
+without full-table rerenders
 ```
+
+This significantly improves rendering precision under frequent state transitions.
 
 ---
 
-# Reconciliation Rules
+# Reconciliation Engine
 
 The reconciliation layer handles:
 
 - stale optimistic overwrite protection
 - optimistic version tracking
 - replay finalization
-- conflict detection
-- deterministic synchronization resolution
+- deterministic conflict resolution
+- synchronization consistency guarantees
+- replay-source validation
 
 ---
 
 # Operational Diagnostics
 
-The dashboard includes internal diagnostics for:
+The dashboard exposes internal synchronization diagnostics for debugging and visibility.
 
-- optimistic state count
-- replay state count
+### Available Diagnostics
+
+- optimistic entity count
 - dirty entity count
+- replay queue state
 - synchronization operations
 - replay visibility
+- reconciliation status
 
 ---
 
 # Why This Project Exists
 
-Most frontend portfolio projects focus on UI complexity.
+Most frontend portfolio projects emphasize:
 
-This project focuses on:
+- UI polish
+- design systems
+- CRUD workflows
+
+This project focuses on a different class of frontend problems:
 
 ```txt
-frontend operational architecture
+Frontend operational architecture
 ```
 
-The interesting problems are:
+The interesting challenges are:
 
 - synchronization ownership
 - distributed state reasoning
@@ -207,24 +242,25 @@ The interesting problems are:
 - replay coordination
 - reconciliation correctness
 - rendering isolation
+- metadata consistency
 
 ---
 
 # Local Development
 
-Install dependencies:
+## Install dependencies
 
 ```bash
 npm install
 ```
 
-Run development server:
+## Start development server
 
 ```bash
 npm run dev
 ```
 
-Run production build:
+## Create production build
 
 ```bash
 npm run build
@@ -232,24 +268,97 @@ npm run build
 
 ---
 
-# Future Improvements
+# Project Structure
 
-Potential future explorations:
+```txt
+src/
+├── app/
+├── components/
+├── lib/
+└── modules/
+    ├── activity/
+    │   ├── components/
+    │   ├── hooks/
+    │   └── services/
+    │
+    └── transactions/
+        ├── components/
+        ├── hooks/
+        ├── services/
+        ├── selectors/
+        ├── store/
+        ├── synchronization/
+        ├── reconciliation/
+        ├── types/
+        └── utils/
+```
 
-- websocket ordering guarantees
-- reconciliation timelines
-- synchronization tracing
-- replay batching
-- conflict resolution strategies
-- distributed debugging tooling
-- server-driven invalidation
-- event sourcing simulations
+### Architecture Notes
+
+- `app/` contains the Next.js application routes and layouts.
+- `components/` contains shared UI components used across modules.
+- `lib/` contains shared infrastructure and application utilities.
+- `modules/` contains domain-oriented frontend systems.
+
+Each module owns its own:
+
+- state management
+- synchronization logic
+- reconciliation rules
+- services
+- selectors
+- rendering logic
+- domain utilities
+
+This structure prioritizes:
+
+- domain isolation
+- ownership clarity
+- scalability
+- synchronization encapsulation
+- operational maintainability
 
 ---
 
-# Notes
+# Future Improvements
 
-This project intentionally simulates production-oriented frontend synchronization problems that commonly appear in:
+Potential future explorations include:
+
+- websocket ordering guarantees
+- synchronization tracing
+- replay batching
+- event sourcing simulations
+- reconciliation timelines
+- distributed debugging tooling
+- server-driven invalidation
+- conflict resolution strategies
+- CRDT-inspired synchronization models
+
+---
+
+# Production-Oriented Inspiration
+
+This project intentionally simulates frontend synchronization problems commonly found in:
 
 - operational dashboards
-- f
+- financial systems
+- collaborative applications
+- offline-first applications
+- real-time monitoring systems
+- distributed frontend platforms
+
+---
+
+# Design Philosophy
+
+```txt
+State consistency over convenience.
+Deterministic synchronization over implicit behavior.
+Operational visibility over hidden orchestration.
+```
+
+---
+
+# License
+
+MIT

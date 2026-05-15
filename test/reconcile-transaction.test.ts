@@ -1,6 +1,6 @@
-import { createMetadata } from "../../../../test/factories/metadata-factory";
-import { createTransaction } from "../../../../test/factories/transaction-factory";
-import { reconcileTransaction } from "./reconcile-transaction";
+import { createMetadata } from "./factories/metadata-factory";
+import { createTransaction } from "./factories/transaction-factory";
+import { reconcileTransaction } from "../src/modules/transactions/reconciliation/reconcile-transaction";
 import { describe, expect, it } from "vitest";
 
 describe("reconcileTransaction", () => {
