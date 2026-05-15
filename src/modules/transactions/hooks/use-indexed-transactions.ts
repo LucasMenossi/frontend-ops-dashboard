@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
 import { useTransactionEntityStore } from "../store/use-transaction-entity-store";
-import { Transaction, TransactionsQueryParams } from "../types";
+import { Transaction, TransactionsQueryParams } from "../types/transactions";
 import { sortTransactions } from "../projections/sort-transactions";
 
 interface UseIndexedTransactionsParams {

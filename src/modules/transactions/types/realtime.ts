@@ -1,4 +1,4 @@
-import { Transaction, TransactionStatus } from "../types";
+import { Transaction, TransactionStatus } from "./transactions";
 
 export type TransactionRealtimeEvent =
   | TransactionUpdatedEvent

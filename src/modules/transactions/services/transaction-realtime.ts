@@ -1,10 +1,10 @@
 import { faker } from "@faker-js/faker";
 
-import { transactions } from "./mock-data";
+import { transactions } from "../mocks/transaction";
 
 import { TransactionRealtimeEvent } from "../types/realtime";
 
-import { TransactionStatus } from "../types";
+import { TransactionStatus } from "../types/transactions";
 
 const listeners = new Set<(event: TransactionRealtimeEvent) => void>();
 

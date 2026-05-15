@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { transactions } from "@/modules/transactions/services/mock-data";
-import { Transaction, TransactionStatus } from "@/modules/transactions/types";
+import { transactions } from "@/modules/transactions/mocks/transaction";
+import {
+  Transaction,
+  TransactionStatus,
+} from "@/modules/transactions/types/transactions";
 
 const DEFAULT_PAGE = 1;
 const DEFAULT_PAGE_SIZE = 20;

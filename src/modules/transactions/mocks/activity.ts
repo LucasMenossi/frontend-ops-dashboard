@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 
-import { ActivityEvent } from "../types";
+import { ActivityEvent } from "../../activity/types";
 
 export const activityEvents: ActivityEvent[] = Array.from(
   { length: 500 },

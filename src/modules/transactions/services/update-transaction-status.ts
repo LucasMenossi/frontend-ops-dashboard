@@ -1,4 +1,4 @@
-import { TransactionStatus } from "../types";
+import { TransactionStatus } from "../types/transactions";
 
 interface UpdateTransactionStatusParams {
   transactionId: string;

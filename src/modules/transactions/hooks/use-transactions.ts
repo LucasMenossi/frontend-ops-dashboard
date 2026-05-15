@@ -2,7 +2,7 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 
 import { getTransactions } from "../services/get-transactions";
-import { Transaction, TransactionsQueryParams } from "../types";
+import { Transaction, TransactionsQueryParams } from "../types/transactions";
 import { useTransactionEntityStore } from "../store/use-transaction-entity-store";
 
 interface TransactionsResponse {

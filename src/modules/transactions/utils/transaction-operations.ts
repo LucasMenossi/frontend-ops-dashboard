@@ -1,4 +1,4 @@
-import { Transaction } from "../types";
+import { Transaction } from "../types/transactions";
 
 export const createOptimisticTransactionPatch = (
   current: Transaction,

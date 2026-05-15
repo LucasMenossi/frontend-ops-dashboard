@@ -1,4 +1,4 @@
-import { Transaction } from "@/modules/transactions/types";
+import { Transaction } from "@/modules/transactions/types/transactions";
 
 export const createTransaction = (
   overrides: Partial<Transaction> = {},

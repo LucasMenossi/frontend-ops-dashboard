@@ -1,4 +1,4 @@
-import { Transaction, TransactionsQueryParams } from "../types";
+import { Transaction, TransactionsQueryParams } from "../types/transactions";
 
 export const sortTransactions = (
   transactions: Transaction[],

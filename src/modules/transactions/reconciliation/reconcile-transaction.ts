@@ -1,18 +1,15 @@
-import { Transaction } from "../types";
+import { Transaction } from "../types/transactions";
 
 import { TransactionEntityMetadata } from "../types/entity-metadata";
 
 interface ReconcileTransactionParams {
   current?: Transaction;
-
   incoming: Transaction;
-
   metadata?: TransactionEntityMetadata;
 }
 
 export interface ReconcileTransactionResult {
   transaction: Transaction;
-
   shouldFinalizeOptimistic: boolean;
 }
 
@@ -21,59 +18,35 @@ export const reconcileTransaction = ({
   incoming,
   metadata,
 }: ReconcileTransactionParams): ReconcileTransactionResult => {
-  /*
-   * NEW ENTITY
-   */
-
   if (!current) {
     return {
       transaction: incoming,
-
       shouldFinalizeOptimistic: false,
     };
   }
-
-  /*
-   * OPTIMISTIC OWNERSHIP
-   */
 
   if (
     metadata?.syncState === "optimistic" &&
     metadata.optimisticVersion !== null
   ) {
-    /*
-     * STALE REMOTE UPDATE
-     */
-
     if (incoming.version < metadata.optimisticVersion) {
       return {
         transaction: current,
-
         shouldFinalizeOptimistic: false,
       };
     }
 
-    /*
-     * SERVER CAUGHT UP
-     */
-
     if (incoming.version >= metadata.optimisticVersion) {
       return {
         transaction: incoming,
-
         shouldFinalizeOptimistic: true,
       };
     }
   }
 
-  /*
-   * VERSION PRECEDENCE
-   */
-
   if (incoming.version > current.version) {
     return {
       transaction: incoming,
-
       shouldFinalizeOptimistic: false,
     };
   }
@@ -81,14 +54,9 @@ export const reconcileTransaction = ({
   if (incoming.version < current.version) {
     return {
       transaction: current,
-
       shouldFinalizeOptimistic: false,
     };
   }
-
-  /*
-   * SAME VERSION
-   */
 
   const currentUpdatedAt = new Date(current.updatedAt).getTime();
 
@@ -97,14 +65,12 @@ export const reconcileTransaction = ({
   if (incomingUpdatedAt > currentUpdatedAt) {
     return {
       transaction: incoming,
-
       shouldFinalizeOptimistic: false,
     };
   }
 
   return {
     transaction: current,
-
     shouldFinalizeOptimistic: false,
   };
 };

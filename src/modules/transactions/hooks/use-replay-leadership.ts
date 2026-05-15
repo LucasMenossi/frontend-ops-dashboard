@@ -8,7 +8,7 @@ import {
   clearReplayLeader,
   isReplayLeader,
   startReplayHeartbeat,
-} from "../transport/replay/replay-leader";
+} from "../sync/replay/replay-leader";
 
 export const useReplayLeadership = () => {
   const [leader] = useState(() => {

@@ -10,9 +10,9 @@ import { useOfflineMutationQueue } from "../store/use-offline-mutation-queue";
 
 import { useTransactionEntityStore } from "../store/use-transaction-entity-store";
 
-import { broadcastTransactionPatch } from "../transport/broadcast/broadcast-transaction-patch";
+import { broadcastTransactionPatch } from "../sync/broadcast/broadcast-transaction-patch";
 
-import { Transaction, TransactionStatus } from "../types";
+import { Transaction, TransactionStatus } from "../types/transactions";
 import {
   createConflictMetadata,
   createOptimisticMetadata,

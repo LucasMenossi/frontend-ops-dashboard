@@ -9,8 +9,8 @@ import { TransactionRealtimeEvent } from "../types/realtime";
 import { usePendingRealtimeUpdates } from "../store/use-pending-realtime-updates";
 
 import { useTransactionEntityStore } from "../store/use-transaction-entity-store";
-import { broadcastTransactionPatch } from "../transport/broadcast/broadcast-transaction-patch";
-import { Transaction } from "../types";
+import { broadcastTransactionPatch } from "../sync/broadcast/broadcast-transaction-patch";
+import { Transaction } from "../types/transactions";
 import { logOperation } from "../diagnostics/transaction-operation-log";
 
 export const useTransactionRealtime = () => {

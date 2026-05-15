@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-import { transactionsBroadcastChannel } from "../transport/broadcast/broadcast-channel";
+import { transactionsBroadcastChannel } from "../sync/broadcast/broadcast-channel";
 
 import { CrossTabEvent } from "../types/cross-tab";
 

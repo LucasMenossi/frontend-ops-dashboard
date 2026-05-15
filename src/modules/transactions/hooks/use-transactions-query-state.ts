@@ -13,7 +13,7 @@ import {
   TransactionStatus,
   TransactionsQueryParams,
   SortDirection,
-} from "../types";
+} from "../types/transactions";
 
 const DEFAULT_PAGE = 1;
 

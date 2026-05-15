@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-import { Transaction, TransactionStatus } from "../types";
+import { Transaction, TransactionStatus } from "../types/transactions";
 
 import { reconcileTransaction } from "../reconciliation/reconcile-transaction";
 

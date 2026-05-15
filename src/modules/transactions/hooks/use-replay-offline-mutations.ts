@@ -25,10 +25,6 @@ export const useReplayOfflineMutations = () => {
 
   const { isLeader } = useReplayLeadership();
 
-  /*
-   * QUEUE STATE
-   */
-
   const queue = useOfflineMutationQueue((state) => state.queue);
 
   const dequeue = useOfflineMutationQueue((state) => state.dequeue);
@@ -39,54 +35,26 @@ export const useReplayOfflineMutations = () => {
 
   const markAsFailed = useOfflineMutationQueue((state) => state.markAsFailed);
 
-  /*
-   * ENTITY METADATA
-   */
-
   const setTransactionMetadata = useTransactionEntityStore(
     (state) => state.setTransactionMetadata,
   );
 
-  /*
-   * REPLAY LOCK
-   */
-
   const replayingRef = useRef(false);
-
-  /*
-   * UI STATE
-   */
 
   const [isReplaying, setIsReplaying] = useState(false);
 
   useEffect(() => {
-    /*
-     * NETWORK REQUIRED
-     */
-
     if (!isOnline) {
       return;
     }
-
-    /*
-     * SINGLE REPLAY OWNER
-     */
 
     if (!isLeader) {
       return;
     }
 
-    /*
-     * EMPTY QUEUE
-     */
-
     if (queue.length === 0) {
       return;
     }
-
-    /*
-     * REPLAY ALREADY RUNNING
-     */
 
     if (replayingRef.current) {
       return;
@@ -98,23 +66,11 @@ export const useReplayOfflineMutations = () => {
 
       try {
         for (const mutation of queue) {
-          /*
-           * ALREADY PROCESSING
-           */
-
           if (mutation.state === "processing") {
             continue;
           }
 
-          /*
-           * QUEUE STATE
-           */
-
           markAsProcessing(mutation.id);
-
-          /*
-           * ENTITY STATE
-           */
 
           setTransactionMetadata(
             mutation.transactionId,
@@ -122,19 +78,11 @@ export const useReplayOfflineMutations = () => {
           );
 
           try {
-            /*
-             * SERVER REPLAY
-             */
-
             await updateTransactionStatus({
               transactionId: mutation.transactionId,
 
               status: mutation.status,
             });
-
-            /*
-             * FINALIZE ENTITY
-             */
 
             setTransactionMetadata(mutation.transactionId, {
               ...createSyncedMetadata(mutation.id),
@@ -143,10 +91,6 @@ export const useReplayOfflineMutations = () => {
 
               replaySourceTabId: RUNTIME_TAB_ID,
             });
-
-            /*
-             * REMOVE QUEUE ITEM
-             */
 
             dequeue(mutation.id);
 
@@ -160,24 +104,12 @@ export const useReplayOfflineMutations = () => {
               createdAt: new Date().toISOString(),
             });
           } catch {
-            /*
-             * FAILED REPLAY
-             */
-
             markAsFailed(mutation.id);
-
-            /*
-             * CONFLICT STATE
-             */
 
             setTransactionMetadata(
               mutation.transactionId,
               createConflictMetadata(),
             );
-
-            /*
-             * OPERATION LOG
-             */
 
             logOperation({
               id: mutation.id,

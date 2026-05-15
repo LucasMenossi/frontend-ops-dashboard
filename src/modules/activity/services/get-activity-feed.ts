@@ -1,4 +1,4 @@
-import { activityEvents } from "./mock-activity-data";
+import { activityEvents } from "../../transactions/mocks/activity";
 
 import { ActivityFeedResponse } from "../types";
 

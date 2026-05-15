@@ -8,7 +8,7 @@ import {
   saveOfflineQueue,
 } from "../persistence/offline-queue-storage";
 
-import { TransactionStatus } from "../types";
+import { TransactionStatus } from "../types/transactions";
 
 export type MutationState = "pending" | "processing" | "failed";
 

@@ -4,7 +4,7 @@ import { bulkUpdateTransactions } from "../services/bulk-update-transactions";
 
 import { useTransactionEntityStore } from "../store/use-transaction-entity-store";
 
-import { broadcastTransactionPatch } from "../transport/broadcast/broadcast-transaction-patch";
+import { broadcastTransactionPatch } from "../sync/broadcast/broadcast-transaction-patch";
 
 import { createOptimisticTransactionPatch } from "../utils/transaction-operations";
 
@@ -44,10 +44,6 @@ export const useBulkUpdateTransactions = () => {
         if (!current) {
           return;
         }
-
-        /*
-         * NO CHANGE
-         */
 
         if (current.status === variables.status) {
           return;

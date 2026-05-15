@@ -1,6 +1,6 @@
 import { transactionsBroadcastChannel } from "./broadcast-channel";
 
-import { Transaction } from "../../types";
+import { Transaction } from "../../types/transactions";
 
 export interface BroadcastTransactionPatchParams {
   transactionId: string;

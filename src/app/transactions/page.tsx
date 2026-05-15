@@ -27,108 +27,56 @@ import { useTransactionsQueryState } from "@/modules/transactions/hooks/use-tran
 
 import { usePendingRealtimeUpdates } from "@/modules/transactions/store/use-pending-realtime-updates";
 
-import { Transaction, TransactionStatus } from "@/modules/transactions/types";
-import { useIndexedTransactions } from "@/modules/transactions/hooks/user-indexed-transactions";
+import {
+  Transaction,
+  TransactionStatus,
+} from "@/modules/transactions/types/transactions";
+import { useIndexedTransactions } from "@/modules/transactions/hooks/use-indexed-transactions";
 import { useOfflineMutationQueue } from "@/modules/transactions/store/use-offline-mutation-queue";
 import { useNetworkStatus } from "@/modules/transactions/hooks/use-network-status";
 import { useReplayOfflineMutations } from "@/modules/transactions/hooks/use-replay-offline-mutations";
 import { useCrossTabTransactions } from "@/modules/transactions/hooks/use-cross-tab-transaction";
 import { SyncDiagnosticsPanel } from "@/modules/transactions/components/sync-diagnostic-panel";
-import { OperationLogPanel } from "@/components/operation-log-panel";
+import { OperationLogPanel } from "@/modules/transactions/components/operation-log-panel";
 
 export default function TransactionsPage() {
-  /*
-   * QUERY STATE
-   */
-
   const {
     queryParams,
-
     searchInput,
-
     setSearchInput,
-
     updatePagination,
-
     updateSorting,
-
     updateFilters,
   } = useTransactionsQueryState();
 
-  /*
-   * HYDRATE ENTITY STORE
-   */
+  const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
+  const parentRef = useRef<HTMLDivElement>(null);
 
   useTransactions(queryParams);
-
-  /*
-   * REALTIME
-   */
-
   useTransactionRealtime();
   useCrossTabTransactions();
   useOfflineMutationQueue();
 
-  /*
-   * DERIVED PROJECTION
-   */
-
   const queue = useOfflineMutationQueue((state) => state.queue);
-  const { isReplaying } = useReplayOfflineMutations();
 
+  const { isReplaying } = useReplayOfflineMutations();
   const { isOnline } = useNetworkStatus();
 
-  const {
-    transactionIds,
-
-    total,
-
-    totalPages,
-  } = useIndexedTransactions({
+  const { transactionIds, total, totalPages } = useIndexedTransactions({
     queryParams,
   });
 
-  /*
-   * QUERY CLIENT
-   */
-
   const queryClient = useQueryClient();
 
-  /*
-   * REALTIME BANNER
-   */
-
-  const {
-    hasPendingUpdates,
-
-    setHasPendingUpdates,
-  } = usePendingRealtimeUpdates();
-
-  /*
-   * MUTATIONS
-   */
+  const { hasPendingUpdates, setHasPendingUpdates } =
+    usePendingRealtimeUpdates();
 
   const bulkUpdateMutation = useBulkUpdateTransactions();
-
-  /*
-   * ROW SELECTION
-   */
-
-  const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
-
-  /*
-   * STABLE SELECTION HANDLERS
-   */
-
-  /*
-   * TABLE COLUMNS
-   */
 
   const columns = useMemo<ColumnDef<Transaction>[]>(
     () => [
       {
         id: "select",
-
         header: () => {
           const allSelected =
             transactionIds.length > 0 &&
@@ -164,7 +112,6 @@ export default function TransactionsPage() {
 
       {
         accessorKey: "customerName",
-
         header: () => (
           <button
             onClick={() => {
@@ -184,13 +131,11 @@ export default function TransactionsPage() {
 
       {
         accessorKey: "email",
-
         header: "Email",
       },
 
       {
         accessorKey: "amount",
-
         header: () => (
           <button
             onClick={() => {
@@ -210,7 +155,6 @@ export default function TransactionsPage() {
 
       {
         accessorKey: "status",
-
         header: () => (
           <button
             onClick={() => {
@@ -232,7 +176,6 @@ export default function TransactionsPage() {
 
       {
         accessorKey: "createdAt",
-
         header: () => (
           <button
             onClick={() => {
@@ -252,58 +195,28 @@ export default function TransactionsPage() {
 
       {
         id: "actions",
-
         header: "Actions",
-
         cell: () => null,
       },
     ],
     [
       queryParams.sortKey,
-
       queryParams.direction,
-
       selectedRows,
-
       transactionIds,
-
       updateSorting,
     ],
   );
 
-  /*
-   * TABLE
-   */
-
   const table = useReactTable({
     data: [],
-
     columns,
-
     getCoreRowModel: getCoreRowModel(),
-  });
-
-  /*
-   * VIRTUALIZATION
-   */
-
-  const parentRef = useRef<HTMLDivElement>(null);
-
-  const rowVirtualizer = useVirtualizer({
-    count: transactionIds.length,
-
-    getScrollElement: () => parentRef.current,
-
-    estimateSize: () => 56,
-
-    overscan: 10,
   });
 
   return (
     <div className="flex">
       <div className="flex-1 space-y-6 p-6">
-        {/* HEADER */}
-
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold">Transactions</h1>
@@ -362,8 +275,6 @@ export default function TransactionsPage() {
           </div>
         )}
 
-        {/* SEARCH */}
-
         <div>
           <input
             value={searchInput}
@@ -372,8 +283,6 @@ export default function TransactionsPage() {
             className="w-full rounded-lg border p-3"
           />
         </div>
-
-        {/* STATUS FILTERS */}
 
         <div className="flex flex-wrap gap-2">
           {["pending", "processing", "completed", "failed", "refunded"].map(
@@ -404,8 +313,6 @@ export default function TransactionsPage() {
             },
           )}
         </div>
-
-        {/* BULK ACTIONS */}
 
         {selectedRows.size > 0 && (
           <div className="flex items-center justify-between rounded-xl border bg-zinc-50 p-4">
@@ -446,8 +353,6 @@ export default function TransactionsPage() {
         <SyncDiagnosticsPanel />
         <OperationLogPanel />
 
-        {/* TABLE */}
-
         <div
           ref={parentRef}
           className="h-[600px] overflow-auto rounded-xl border"
@@ -478,8 +383,6 @@ export default function TransactionsPage() {
             </tbody>
           </table>
         </div>
-
-        {/* PAGINATION */}
 
         <div className="flex items-center justify-between">
           <div className="text-sm text-zinc-500">Total: {total}</div>

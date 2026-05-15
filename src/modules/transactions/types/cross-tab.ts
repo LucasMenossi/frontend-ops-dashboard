@@ -1,4 +1,4 @@
-import { Transaction } from "../types";
+import { Transaction } from "./transactions";
 
 export type CrossTabEvent = TransactionPatchedEvent;
 

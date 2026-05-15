@@ -52,8 +52,6 @@ export const NormalizedTransactionRow = memo(
 
     return (
       <tr className="border-b">
-        {/* checkbox */}
-
         <td className="p-4">
           <input
             checked={isSelected}
@@ -82,8 +80,6 @@ export const NormalizedTransactionRow = memo(
         <td className="p-4 text-sm">
           {new Date(transaction.createdAt).toLocaleDateString()}
         </td>
-
-        {/* actions */}
 
         <td className="p-4">
           <button

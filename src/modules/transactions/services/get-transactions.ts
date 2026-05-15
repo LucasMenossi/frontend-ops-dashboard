@@ -1,4 +1,4 @@
-import { TransactionsQueryParams } from "../types";
+import { TransactionsQueryParams } from "../types/transactions";
 
 interface GetTransactionsResponse<T> {
   data: T[];

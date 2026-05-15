@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 
-import { Transaction, TransactionStatus } from "../types";
+import { Transaction, TransactionStatus } from "../types/transactions";
 
 export const TRANSACTION_STATUSES: TransactionStatus[] = [
   "pending",

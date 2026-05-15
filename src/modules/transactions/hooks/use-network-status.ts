@@ -3,16 +3,12 @@
 import { useEffect, useState } from "react";
 
 export const useNetworkStatus = () => {
-  /*
-   * SSR-SAFE LAZY INIT
-   */
-
   const [isOnline, setIsOnline] = useState(() => {
-    if (typeof window === "undefined") {
+    if (globalThis.window === undefined) {
       return true;
     }
 
-    return window.navigator.onLine;
+    return globalThis.navigator.onLine;
   });
 
   useEffect(() => {
@@ -24,14 +20,14 @@ export const useNetworkStatus = () => {
       setIsOnline(false);
     };
 
-    window.addEventListener("online", handleOnline);
+    globalThis.addEventListener("online", handleOnline);
 
-    window.addEventListener("offline", handleOffline);
+    globalThis.addEventListener("offline", handleOffline);
 
     return () => {
-      window.removeEventListener("online", handleOnline);
+      globalThis.removeEventListener("online", handleOnline);
 
-      window.removeEventListener("offline", handleOffline);
+      globalThis.removeEventListener("offline", handleOffline);
     };
   }, []);
 
